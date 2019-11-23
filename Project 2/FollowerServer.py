@@ -43,7 +43,7 @@ class FollowerServer():
                 data = res_socket.recv(1024).decode('utf-8')
                 client_socket.sendall(data.encode())
             if data == "Release":
-                res_socket.sendall("Status".encode())
+                res_socket.sendall("Release".encode())
                 data = res_socket.recv(1024).decode('utf-8')
                 client_socket.sendall(data.encode())
 

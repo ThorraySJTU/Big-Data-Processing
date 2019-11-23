@@ -64,26 +64,27 @@ class LeaderServer():
                 res_socket.sendall(("Follower id :%d"%(follower_id)).encode())
                 continue
             if data == "Status":
-                print(data)
+                print("Data is Status:",data)
                 lock_map = self.__lock_map__()
                 if lock_map == 0:
-                    res_socket.sendall("Release".encode())
+                    res_socket.sendall("Release Status".encode())
                 else:
-                    res_socket.sendall("Lock".encode())
+                    res_socket.sendall("Lock Status".encode())
             if data == "Lock":
-                print(data)
+                print("Data is Lock:",data)
                 lock_map = self.__lock__(res_socket)
                 print(lock_map)
                 if lock_map == 0:
-                    res_socket.sendall("Lock".encode())
+                    res_socket.sendall("Lock Status".encode())
                 if lock_map == 2:
                     res_socket.sendall("You can't lock.".encode())
             if data == "Release":
-                print(data)
+                print("Data is Release:",data)
+                print(res_socket)
                 lock_map = self.__release__(res_socket)
                 print(lock_map)
                 if lock_map == 1:
-                    res_socket.sendall("Release".encode())
+                    res_socket.sendall("Release Status".encode())
                 if lock_map == 2:
                     res_socket.sendall("The owner of the lock is not you.".encode())
                 if lock_map == 0:

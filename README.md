@@ -36,11 +36,5 @@ python Client_follower_1.py
 
 You can add the command in the fourth and fifth terminal. (Status/Lock/Release)
 
-Now, there is a problem. When we **Lock** in the client which connects directly to the leader server, the status of the lock, which connects to the follower server is wrong .
-
-### To do
-
-Solve the above problem.
-
-Each client has its own lock, but not all users have one lock.
+After the command, you have to choose the lock name which will be operated.
 

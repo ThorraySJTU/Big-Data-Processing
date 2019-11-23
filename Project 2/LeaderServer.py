@@ -8,6 +8,7 @@ class LeaderServer():
         self.connection = []
         self.FollowerServer = []
         self.lock_map = []
+        self.lock_name = []
     
     def __new_client__(self,res_socket):
         client_id = len(self.client) + 50000
@@ -19,33 +20,51 @@ class LeaderServer():
         self.FollowerServer.append({"follower_id":follower_id,"socket":res_socket})
         return follower_id
     
-    def __lock_map__(self):
+    def __lock_map__(self,res_socket,msg):
         print(self.lock_map)
-        length_lock_map = len(self.lock_map)
-        return length_lock_map
+        print(self.lock_name)
+        try:
+            index = self.lock_name.index(msg)
+            info = self.lock_map[index]
+        except:
+            info = ""
+        return info
 
-    def __lock__(self,res_socket):
+    def __lock__(self,res_socket,msg):
         print(self.lock_map)
-        length_lock_map = len(self.lock_map)
-        if length_lock_map == 0:
-            self.lock_map.append(res_socket)
-            print(self.lock_map)
-        else:
-            length_lock_map = 2
-        return length_lock_map
+        print(self.lock_name)
+        flag = 0
+        for i in self.lock_map:
+            if i == res_socket:
+                flag = 1
+        if flag == 0:
+            for i in self.lock_name:
+                if i == msg:
+                    flag = 2
+            if flag == 0:
+                self.lock_map.append(res_socket)
+                self.lock_name.append(msg)
+        return flag
 
-    def __release__(self,res_socket):
+    def __release__(self,res_socket,msg):
         print(self.lock_map)
         length_lock_map = len(self.lock_map)
-        if length_lock_map == 1:
-            if res_socket == self.lock_map[0]:
-                self.lock_map = []
-                print(self.lock_map)
+        flag = 0
+        for i in self.lock_map:
+            if i == res_socket:
+                flag = 1
+        if length_lock_map != 0:
+            if flag == 1:
+                if self.lock_map.index(res_socket) == self.lock_name.index(msg):
+                    self.lock_map.remove(res_socket)
+                    self.lock_name.remove(msg)
+                else:
+                    flag = 2
             else:
-                length_lock_map = 2
+                flag = 2
         else:
-            length_lock_map = 0
-        return length_lock_map
+            flag = 0
+        return flag
 
 
     def __response__(self,res_socket):
@@ -63,32 +82,39 @@ class LeaderServer():
                 follower_id = self.__new_follower__(res_socket)
                 res_socket.sendall(("Follower id :%d"%(follower_id)).encode())
                 continue
-            if data == "Status":
+            if data.split(":")[0] == "Status":
                 print("Data is Status:",data)
-                lock_map = self.__lock_map__()
-                if lock_map == 0:
-                    res_socket.sendall("Release Status".encode())
+                msg = data.split(":")[1]
+                lock_map = self.__lock_map__(res_socket,msg)
+                print(lock_map)
+                if lock_map == "":
+                    res_socket.sendall(("There isn't a lock named>>"+msg).encode())
                 else:
-                    res_socket.sendall("Lock Status".encode())
-            if data == "Lock":
+                    res_socket.sendall((msg+">>Lock Status\nOwner information: "+str(lock_map)).encode())
+                
+            if data.split(":")[0] == "Lock":
                 print("Data is Lock:",data)
-                lock_map = self.__lock__(res_socket)
+                msg = data.split(":")[1]
+                lock_map = self.__lock__(res_socket,msg)
                 print(lock_map)
                 if lock_map == 0:
-                    res_socket.sendall("Lock Status".encode())
+                    res_socket.sendall((msg+">>Lock Status").encode())
+                if lock_map == 1:
+                    res_socket.sendall(("You have already had a Lock !").encode())
                 if lock_map == 2:
-                    res_socket.sendall("You can't lock.".encode())
-            if data == "Release":
+                    res_socket.sendall((msg+">>This name of Lock have existed.").encode())
+            if data.split(":")[0] == "Release":
                 print("Data is Release:",data)
+                msg = data.split(":")[1]
                 print(res_socket)
-                lock_map = self.__release__(res_socket)
+                lock_map = self.__release__(res_socket,msg)
                 print(lock_map)
                 if lock_map == 1:
-                    res_socket.sendall("Release Status".encode())
+                    res_socket.sendall((msg+">>Release Status").encode())
                 if lock_map == 2:
-                    res_socket.sendall("The owner of the lock is not you.".encode())
+                    res_socket.sendall(("You don't have a lock named>>"+msg).encode())
                 if lock_map == 0:
-                    res_socket.sendall("There isn't a lock".encode())
+                    res_socket.sendall(("There isn't any lock.").encode())
                 
     
     def run(self):

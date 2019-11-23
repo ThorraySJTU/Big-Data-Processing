@@ -24,6 +24,8 @@ class client():
 
     def __status__(self, server_socket):
         senddata = "Status"
+        add_info  = input("Lockname >>")
+        senddata = "Status:"+add_info
         server_socket.sendall(senddata.encode())
         print("Check the lock status")
         data = server_socket.recv(1024).decode('utf-8')
@@ -31,6 +33,8 @@ class client():
 
     def __lock__(self, server_socket):
         senddata = "Lock"
+        add_info  = input("Lockname >>")
+        senddata = "Lock:"+add_info
         server_socket.sendall(senddata.encode())
         print("Lock operation")
         data = server_socket.recv(1024).decode('utf-8')
@@ -38,6 +42,8 @@ class client():
 
     def __release__(self, server_socket):
         senddata = "Release"
+        add_info  = input("Lockname >>")
+        senddata = "Release:"+add_info
         server_socket.sendall(senddata.encode())
         print("Release operation")
         data = server_socket.recv(1024).decode('utf-8')

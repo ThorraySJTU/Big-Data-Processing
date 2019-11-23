@@ -34,16 +34,16 @@ class FollowerServer():
                 client_id = self.__new_client__(client_socket)
                 client_socket.sendall(("Client id :%d"%(client_id)).encode())
                 continue
-            if data == "Status":
-                res_socket.sendall("Status".encode())
+            if data.split(":")[0] == "Status":
+                res_socket.sendall(data.encode())
                 data = res_socket.recv(1024).decode('utf-8')
                 client_socket.sendall(data.encode())
-            if data == "Lock":
-                res_socket.sendall("Lock".encode())
+            if data.split(":")[0] == "Lock":
+                res_socket.sendall(data.encode())
                 data = res_socket.recv(1024).decode('utf-8')
                 client_socket.sendall(data.encode())
-            if data == "Release":
-                res_socket.sendall("Release".encode())
+            if data.split(":")[0] == "Release":
+                res_socket.sendall(data.encode())
                 data = res_socket.recv(1024).decode('utf-8')
                 client_socket.sendall(data.encode())
 

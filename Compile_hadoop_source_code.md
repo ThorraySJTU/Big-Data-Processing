@@ -4,7 +4,7 @@
 - jdk-8u201-linux-x64.tar.gz 
 - apache-ant-1.9.9-bin.tar.gz(在package中已包括)
 - apache-maven-3.3.3-bin.tar.gz(在package中已包括)
-- protobuf-2.5.0.tar.gz(在package中已包括)
+- protobuf-2.5.0.tar.gz ([google drive](https://drive.google.com/open?id=1j6tDl86cKTTpEhJlSUIL_k5jkXy4rdPQ))
 - cmake-3.11.4.tar.gz(在package中已包括)
 ## jar包安装(建议全程在root模式下进行)
 > JDK解压、配置环境变量 JAVA_HOME和PATH，验证java-version

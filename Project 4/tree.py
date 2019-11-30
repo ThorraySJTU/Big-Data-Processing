@@ -37,28 +37,37 @@ class TreeNode:
         return current
 
     def show_tree(self):
+        global public_string
+        public_string = self.name
         def print_branch(treenode, degree):
             if isinstance(treenode, TreeNode):
                 for item in treenode.child.keys():
-                    print((degree + 1) * '\t' + item)
+                    #print((degree + 1) * '\t' + item)
+                    global public_string
+                    public_string += (degree + 1) * '----' + item + '\n'
                     print_branch(treenode.get_child(item), degree + 1)
 
-        print(self.name)
         print_branch(self, 0)
 
+        return public_string
+
     def list_children(self):
+        childlist = []
         for item in self.child.keys():
-            print(item)
+            childlist.append(item)
+
+        return childlist
 
     def print_path(self):
         path = []
         current = self
+        res = ''
         while current != None:
             path.append(current.name)
             current = current.parent
         for i in range(len(path)):
-            print(i * '\t' + path[-(i+1)])
-
+            res += ('/' + path[-(i+1)])
+        return res
 
 if __name__ == '__main__':
     test = TreeNode('~')
